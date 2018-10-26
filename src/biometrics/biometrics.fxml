@@ -1,0 +1,431 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<BorderPane fx:id="mainPane" prefHeight="716.0" prefWidth="1000.0" style="-fx-background-color: BlanchedAlmond;"
+            xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="biometrics.Controller">
+    <top>
+        <MenuBar style="-fx-background-color: BurlyWood;" BorderPane.alignment="TOP_LEFT">
+            <menus>
+                <Menu mnemonicParsing="false" text="Image">
+                    <items>
+                        <MenuItem fx:id="loadImage" mnemonicParsing="false" onAction="#handleLoadImageButton"
+                                  text="Load Image"/>
+                        <MenuItem fx:id="saveImage" mnemonicParsing="false" onAction="#handleSaveImageButton"
+                                  text="Save Image"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Filters">
+                    <items>
+                        <Menu mnemonicParsing="false" text="Linear">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#customFilterButtonHandler" text="Custom"/>
+                                <SeparatorMenuItem mnemonicParsing="false" text="Sample"/>
+                                <MenuItem mnemonicParsing="false" text="Low - pass"
+                                          onAction="#lowPassFilterButtonHandler"/>
+                                <MenuItem mnemonicParsing="false" text="Prewitt"
+                                          onAction="#prewittFilterButtonHandler"/>
+                                <MenuItem mnemonicParsing="false" text="Sobel" onAction="#sobelFilterButtonHandler"/>
+                                <MenuItem mnemonicParsing="false" text="Laplace"
+                                          onAction="#laplaceFilterButtonHandler"/>
+                                <MenuItem mnemonicParsing="false" text="Edges &amp; corners detection"
+                                          onAction="#edgesCornersDetFilterButtonHandler"/>
+                                <MenuItem mnemonicParsing="false" text="Gauss" onAction="#gaussFilterButtonHandler"/>
+                                <MenuItem mnemonicParsing="false" text="High - pass"
+                                          onAction="#highPassFilterButtonHandler"/>
+                            </items>
+                        </Menu>
+                        <MenuItem mnemonicParsing="false" onAction="#kuwaharaFilterButtonHandler" text="Kuwahara"/>
+                        <Menu mnemonicParsing="false" text="Median">
+                            <items>
+                                <MenuItem mnemonicParsing="false" onAction="#median3x3FilterButtonHandler"
+                                          text="3 x 3"/>
+                                <MenuItem mnemonicParsing="false" onAction="#median5x5FilterButtonHandler"
+                                          text="5 x 5"/>
+                            </items>
+                        </Menu>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Transformations">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Adding" onAction="#pointTransformation" userData="0"/>
+                        <MenuItem mnemonicParsing="false" text="Subtracting" onAction="#pointTransformation"
+                                  userData="1"/>
+                        <MenuItem mnemonicParsing="false" text="Multiplying" onAction="#pointTransformation"
+                                  userData="2"/>
+                        <MenuItem mnemonicParsing="false" text="Dividing" onAction="#pointTransformation" userData="3"/>
+                        <SeparatorMenuItem mnemonicParsing="false"/>
+                        <MenuItem mnemonicParsing="false" text="Greyscale - v.1" onAction="#greyScaleTransformation"
+                                  userData="1"/>
+                        <MenuItem mnemonicParsing="false" text="Greyscale - v.2" onAction="#greyScaleTransformation"
+                                  userData="2"/>
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Binarization">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Percent Black Selection" onAction="#binarization" userData="0"/>
+                        <MenuItem mnemonicParsing="false" text="Mean Iterative Selection" onAction="#binarization" userData="1"/>
+                        <!--<MenuItem mnemonicParsing="false" text="Entropy Selection" onAction="#binarization" userData="2"/>-->
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Morphology operations">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Dilation" onAction="#morphologyOperation" userData="0"/>
+                        <MenuItem mnemonicParsing="false" text="Erosion" onAction="#morphologyOperation" userData="1"/>
+                        <MenuItem mnemonicParsing="false" text="Opening" onAction="#morphologyOperation" userData="2"/>
+                        <MenuItem mnemonicParsing="false" text="Closing" onAction="#morphologyOperation" userData="3"/>
+                        <MenuItem mnemonicParsing="false" text="Hit-or-Miss (thinning)" onAction="#morphologyOperation" userData="4"/>
+                        <MenuItem mnemonicParsing="false" text="Hit-or-Miss (fattening)" onAction="#morphologyOperation" userData="5"/>
+                    </items>
+                </Menu>
+
+            </menus>
+        </MenuBar>
+    </top>
+    <left>
+        <VBox fx:id="histogramsVBox" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+              minWidth="-Infinity" prefHeight="675.0" prefWidth="276.0" BorderPane.alignment="CENTER">
+            <children>
+                <BarChart fx:id="redHistogram">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                    <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </padding>
+                </BarChart>
+                <BarChart fx:id="greenHistogram" layoutX="10.0" layoutY="10.0">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                </BarChart>
+                <BarChart fx:id="blueHistogram" layoutX="10.0" layoutY="10.0">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                </BarChart>
+                <BarChart fx:id="rgbHistogram" layoutX="10.0" layoutY="10.0">
+                    <xAxis>
+                        <CategoryAxis side="BOTTOM"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis side="LEFT"/>
+                    </yAxis>
+                </BarChart>
+            </children>
+        </VBox>
+    </left>
+    <right>
+        <VBox maxWidth="210.0" minHeight="-Infinity" minWidth="200.0" prefHeight="675.0" prefWidth="200.0"
+              BorderPane.alignment="CENTER">
+            <children>
+                <Pane>
+                    <children>
+                        <Slider fx:id="scaleSlider" blockIncrement="1.0" layoutX="-2.0" layoutY="31.0"
+                                majorTickUnit="1.0" max="10.0" min="1.0" minorTickCount="1" prefHeight="47.0"
+                                prefWidth="156.0" showTickLabels="true" showTickMarks="true">
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Slider>
+                        <Text fontSmoothingType="LCD" layoutX="7.0" layoutY="27.0" strokeType="OUTSIDE"
+                              strokeWidth="0.0" text="Zoom"/>
+                    </children>
+                </Pane>
+                <HBox spacing="5.0">
+                    <children>
+                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text=" (">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Text>
+                        <Label fx:id="redLabel">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Label>
+                        <Text fontSmoothingType="LCD" layoutX="15.0" layoutY="37.0" strokeType="OUTSIDE"
+                              strokeWidth="0.0" text=",">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Text>
+                        <Label fx:id="greenLabel" layoutX="15.0" layoutY="15.0">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Label>
+                        <Text fontSmoothingType="LCD" layoutX="93.0" layoutY="37.0" strokeType="OUTSIDE"
+                              strokeWidth="0.0" text=",">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Text>
+                        <Label fx:id="blueLabel" layoutX="15.0" layoutY="15.0">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Label>
+                        <Text fontSmoothingType="LCD" layoutX="15.0" layoutY="37.0" strokeType="OUTSIDE"
+                              strokeWidth="0.0" text=")">
+                            <font>
+                                <Font size="20.0"/>
+                            </font>
+                        </Text>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </HBox>
+                <Label text="Change RGB: ">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </Label>
+                <HBox layoutX="12.0" layoutY="110.0" prefHeight="45.0" prefWidth="195.0" spacing="5.0">
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                    <children>
+                        <TextField fx:id="redTextField" prefHeight="25.0" prefWidth="40.0"/>
+                        <TextField fx:id="blueTextField" layoutX="33.0" layoutY="15.0" prefHeight="25.0"
+                                   prefWidth="40.0"/>
+                        <TextField fx:id="greenTextField" layoutX="28.0" layoutY="15.0" prefHeight="25.0"
+                                   prefWidth="40.0"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                </HBox>
+                <Separator prefHeight="10.0" prefWidth="200.0"/>
+                <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="12.0" layoutY="134.0" prefHeight="30.0"
+                       prefWidth="147.0" text="Change brightness: ">
+                    <font>
+                        <Font size="12.0"/>
+                    </font>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </Label>
+                <HBox alignment="TOP_CENTER" spacing="5.0">
+                    <children>
+                        <Button fx:id="brighten" alignment="CENTER" contentDisplay="CENTER" mnemonicParsing="false"
+                                onAction="#handleBrightenImageButton" prefHeight="30.0" prefWidth="30.0" text="+">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Button>
+                        <TextField fx:id="brightnessLevel" prefHeight="25.0" prefWidth="40.0" promptText="p"
+                                   minWidth="40.0"/>
+                        <Button fx:id="darken" mnemonicParsing="false" onAction="#handleDarkenImageButton"
+                                prefHeight="30.0" prefWidth="30.0" text="-">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                        </Button>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </HBox>
+                <Separator prefHeight="10.0" prefWidth="200.0"/>
+                <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="222.0" prefHeight="30.0"
+                       prefWidth="147.0" text="Stretch histogram:">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </Label>
+                <HBox spacing="3.0">
+                    <children>
+                        <TextField fx:id="aStretch" prefHeight="25.0" prefWidth="40.0" promptText="a" minWidth="40.0"/>
+                        <TextField fx:id="bStretch" layoutX="10.0" layoutY="10.0" prefHeight="25.0" prefWidth="40.0"
+                                   minWidth="40.0" promptText="b"/>
+                        <Button fx:id="stretch" mnemonicParsing="false" onAction="#handleStretchHistogramButton"
+                                text="Stretch"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="1.0" top="2.0"/>
+                    </VBox.margin>
+                    <padding>
+                        <Insets bottom="5.0" left="0.0" right="0.0" top="5.0"/>
+                    </padding>
+                </HBox>
+                <Separator layoutX="10.0" layoutY="306.0" prefHeight="10.0" prefWidth="200.0"/>
+                <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="10.0" layoutY="316.0" prefHeight="30.0"
+                       prefWidth="147.0" text="Equalize histogram:">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                    <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </padding>
+                </Label>
+                <HBox alignment="CENTER" layoutX="12.0" layoutY="348.0" spacing="5.0">
+                    <children>
+                        <Button fx:id="equalizate" mnemonicParsing="false" onAction="#handleEqualizeHistogramButton"
+                                text="Equalize"/>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </HBox>
+                <Separator layoutX="10.0" layoutY="385.0" prefHeight="10.0" prefWidth="200.0"/>
+                <HBox spacing="10.0">
+                    <children>
+                        <Label alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="80.0"
+                               text="Binarization:">
+                            <font>
+                                <Font size="11.0"/>
+                            </font>
+                            <padding>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </padding>
+                        </Label>
+                        <TextField fx:id="binaryTextField" prefHeight="25.0" prefWidth="45.0" minWidth="40.0"
+                                   promptText="T"/>
+                        <Button fx:id="binarizeButton" alignment="CENTER" contentDisplay="CENTER"
+                                mnemonicParsing="false" onAction="#handleBinarizationButton" text="OK"/>
+                    </children>
+                    <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </padding>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                </HBox>
+                <HBox alignment="TOP_CENTER">
+                    <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </padding>
+                    <VBox.margin>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </VBox.margin>
+                    <children>
+                        <Separator prefHeight="10.0" prefWidth="200.0"/>
+                    </children>
+                </HBox>
+                <HBox layoutX="12.0" layoutY="472.0" spacing="10.0">
+                    <children>
+                        <Label alignment="TOP_CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="106.0"
+                               text="Otsu method:">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                            <padding>
+                                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                            </padding>
+                        </Label>
+                        <Button fx:id="otsuButton" mnemonicParsing="false" onAction="#handleOtsuButton" text="OK"/>
+                    </children>
+                    <padding>
+                        <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                    </padding>
+                </HBox>
+                <Separator layoutX="10.0" layoutY="460.0" prefHeight="10.0" prefWidth="200.0"/>
+                <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="30.0" prefWidth="182.0"
+                       text="Niblack method:">
+                    <font>
+                        <Font size="14.0"/>
+                    </font>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </Label>
+                <GridPane>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="152.0" minWidth="10.0" prefWidth="117.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="85.0" minWidth="10.0" prefWidth="63.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <Label contentDisplay="CENTER" text="Window size:">
+                            <font>
+                                <Font size="13.0"/>
+                            </font>
+                            <padding>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </padding>
+                            <GridPane.margin>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </GridPane.margin>
+                        </Label>
+                        <Label contentDisplay="CENTER" text="k value:" GridPane.rowIndex="1">
+                            <font>
+                                <Font size="14.0"/>
+                            </font>
+                            <GridPane.margin>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </GridPane.margin>
+                            <padding>
+                                <Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+                            </padding>
+                        </Label>
+                        <TextField fx:id="niblackWindowSizeText" GridPane.columnIndex="1"/>
+                        <TextField fx:id="niblackKValueText" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                    </children>
+                    <VBox.margin>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </VBox.margin>
+                </GridPane>
+                <HBox alignment="CENTER" layoutX="10.0" layoutY="425.0" spacing="5.0">
+                    <children>
+                        <Button fx:id="niblackButton" mnemonicParsing="false" onAction="#handleNiblackButton"
+                                text="OK"/>
+                    </children>
+                    <padding>
+                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
+                    </padding>
+                </HBox>
+            </children>
+        </VBox>
+    </right>
+    <center>
+        <ScrollPane prefHeight="699.0" prefWidth="544.0" BorderPane.alignment="CENTER">
+            <content>
+                <ImageView fx:id="imageView" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true"
+                           preserveRatio="true"/>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

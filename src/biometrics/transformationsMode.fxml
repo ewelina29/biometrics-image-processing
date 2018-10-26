@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane maxHeight="50.0" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: BlanchedAlmond;" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="biometrics.FiltersController">
+    <center>
+        <HBox fx:id="transformationsBox" prefHeight="50.0" prefWidth="50.0" alignment="CENTER">
+            <children>
+                <Label text="Parameter: " alignment="CENTER" fx:id="paramLabel" />
+                <TextField fx:id="text10" prefWidth="45.0" alignment="CENTER"/>
+            </children>
+            <BorderPane.margin>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </BorderPane.margin>
+            <padding>
+                <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+            </padding>
+        </HBox>
+    </center>
+    <top>
+        <Label fx:id="label" BorderPane.alignment="CENTER">
+            <font>
+                <Font size="16.0" />
+            </font>
+        </Label>
+    </top>
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <bottom>
+        <HBox BorderPane.alignment="CENTER" alignment="CENTER">
+            <children>
+                <Button fx:id="okButton" onAction="#handleOkButtonParam" alignment="CENTER" textAlignment="CENTER" mnemonicParsing="false" text="OK" />
+            </children>
+        </HBox>
+    </bottom>
+</BorderPane>
