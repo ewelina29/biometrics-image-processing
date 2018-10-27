@@ -1216,15 +1216,15 @@ public class Controller implements Initializable {
                 FiltersController paramWindow = new FiltersController();
                 paramWindow.displayBinarizationWindow(this, version);
 
-                int param = paramWindow.getParameter();
+                double param = (double)paramWindow.getParameter()/100.0;
 
                 sum = 0;
-                if (param == 100) {
+                if (param == 1) {
                     createBinaryImage(255);
                     break;
                 }
                 for (int i = 0; i < 256; i++) {
-                    sum += i * rgbTable[i];
+                    sum += rgbTable[i];
 
                     if (sum >= total * (param)) {
                         createBinaryImage(i);
